@@ -4,6 +4,7 @@ from typing import List
 import models, schemas
 from database import engine, get_db
 from faker import Faker
+from bulk_insert import bulk_insert_data
 
 # Crear las tablas en la base de datos
 models.Base.metadata.create_all(bind=engine)
@@ -14,6 +15,9 @@ app = FastAPI()
 # Fake data generator
 fake = Faker()
 
+@app.on_event("startup")
+def startup_event():
+    bulk_insert_data()
 # -------------------- CRUD Endpoints --------------------
 
 # Create (POST) Item

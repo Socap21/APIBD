@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
 
 class Item(Base):
@@ -14,13 +15,15 @@ class Customer(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), index=True)
     email = Column(String(100))
+    orders = relationship("Order", back_populates="customer")
 
 class Order(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer)
+    customer_id = Column(Integer, ForeignKey("customers.id"))
     total_price = Column(Float)
+    customer = relationship("Customer", back_populates="orders")
 
 class Product(Base):
     __tablename__ = "products"
@@ -40,20 +43,20 @@ class Inventory(Base):
     __tablename__ = "inventory"
 
     id = Column(Integer, primary_key=True, index=True)
-    product_id = Column(Integer)
+    product_id = Column(Integer, ForeignKey("products.id"))
     stock = Column(Integer)
 
 class Shipment(Base):
     __tablename__ = "shipments"
 
     id = Column(Integer, primary_key=True, index=True)
-    order_id = Column(Integer)
+    order_id = Column(Integer, ForeignKey("orders.id"))
     tracking_number = Column(String(100))
 
 class Payment(Base):
     __tablename__ = "payments"
 
     id = Column(Integer, primary_key=True, index=True)
-    order_id = Column(Integer)
+    order_id = Column(Integer, ForeignKey("orders.id"))
     payment_method = Column(String(50))
     payment_status = Column(String(50))

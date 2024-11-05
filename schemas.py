@@ -114,4 +114,12 @@ class Payment(PaymentBase):
     class Config:
         orm_mode = True
 
+# Esquema para el modelo de productos con inventario
+class ProductWithInventory(BaseModel):
+    product_id: int
+    product_name: str
+    price: float
+    stock: int
 
+    class Config:
+        orm_mode = True

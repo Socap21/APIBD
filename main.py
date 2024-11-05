@@ -1,5 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.orm import aliased
+from sqlalchemy.sql import text
 from typing import List
 import models, schemas
 from database import engine, get_db
@@ -78,8 +81,35 @@ def generate_synthetic_data(db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Datos sintéticos generados con éxito"}
 
-# -------------------- Root endpoint --------------------
-@app.get("/")
-def root():
-    return {"message": "Bienvenido a la API de FastAPI con MySQL para tienda_tecnologia"}
+# -------------------- Endpoint to get products with inventory --------------------
 
+@app.get("/products_with_inventory/", response_model=List[schemas.ProductWithInventory])
+def get_products_with_inventory(db: Session = Depends(get_db)):
+    # Definir la consulta usando un SQL explícito o usando ORM
+    result = db.execute(text("""
+        SELECT products.id AS product_id, products.name AS product_name, products.price, inventory.stock 
+        FROM products 
+        INNER JOIN inventory ON products.id = inventory.product_id;
+    """)).mappings().all()  # Usa .mappings() para obtener un diccionario por cada fila
+    
+    # Convertir el resultado en una lista de diccionarios
+    products_with_inventory = [
+        {
+            "product_id": row["product_id"],
+            "product_name": row["product_name"],
+            "price": row["price"],
+            "stock": row["stock"]
+        }
+        for row in result
+    ]
+    
+    return products_with_inventory
+
+# -------------------- Root endpoint --------------------
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the  API!"}
+
+
+    

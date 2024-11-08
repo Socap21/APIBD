@@ -123,3 +123,125 @@ class ProductWithInventory(BaseModel):
 
     class Config:
         orm_mode = True
+    
+# Esquema para pedidos con pago opcional
+class OrderWithPayment(BaseModel):
+    order_id: int
+    customer_id: int
+    total_price: float
+    payment_status: Optional[str] = None
+    payment_method: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para pedidos con información del cliente
+class OrderWithCustomer(BaseModel):
+    order_id: int
+    customer_name: str
+    customer_email: str
+    total_price: float
+
+    class Config:
+        orm_mode = True
+
+# Esquema para proveedores con inventario opcional
+class SupplierInventory(BaseModel):
+    supplier_name: str
+    supplier_contact: str
+    product_id: Optional[int] = None
+    stock: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para envíos con información del pedido
+class ShipmentWithOrder(BaseModel):
+    shipment_id: int
+    tracking_number: str
+    order_id: int
+    total_price: float
+
+    class Config:
+        orm_mode = True
+
+# Esquema para clientes con pedidos opcionales
+class CustomerWithOrders(BaseModel):
+    customer_id: int
+    customer_name: str
+    customer_email: str
+    order_id: Optional[int] = None
+    total_price: Optional[float] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para proveedores con productos opcionales
+class SupplierWithProducts(BaseModel):
+    supplier_id: int
+    supplier_name: str
+    product_name: Optional[str] = None
+    price: Optional[float] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para pagos completados con total del pedido
+class CompletedPayments(BaseModel):
+    payment_id: int
+    order_id: int
+    payment_method: str
+    total_price: float
+
+    class Config:
+        orm_mode = True
+
+# Esquema para pedidos con envíos opcionales
+class OrderWithShipment(BaseModel):
+    order_id: int
+    total_price: float
+    tracking_number: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para pagos con detalles de envío opcionales
+class PaymentWithShipment(BaseModel):
+    payment_id: int
+    order_id: int
+    payment_method: str
+    tracking_number: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para el resultado de FULL OUTER JOIN entre Products e Inventory
+class ProductInventoryStatus(BaseModel):
+    product_id: Optional[int]  # Puede ser nulo si no hay coincidencia en Inventory
+    product_name: Optional[str]
+    price: Optional[float]
+    stock: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+# Esquema para pedidos con estado de pago opcional
+class OrderWithPaymentStatus(BaseModel):
+    order_id: int
+    total_price: float
+    payment_status: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+# Esquema para productos en inventario con información del proveedor
+class InventoryWithSupplier(BaseModel):
+    inventory_id: int
+    stock: int
+    product_id: int
+    supplier_name: str
+    contact: str
+
+    class Config:
+        orm_mode = True
+

@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
+
 
 class Item(Base):
     __tablename__ = "items"
@@ -15,14 +17,18 @@ class Customer(Base):
     name = Column(String(50), index=True)
     email = Column(String(100))
 
-class Order(Base):
+class Orders(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer)
+    customer_id = Column(Integer, ForeignKey("customer_id"), nullable=False)
     total_price = Column(Float)
 
-class Product(Base):
+    customer = relationship("Customer", back_populates="orders")
+    payments = relationship("Payment", back_populates="order")
+    shipments = relationship("Shipment", back_populates="order")
+
+class Products(Base):
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -50,7 +56,7 @@ class Shipment(Base):
     order_id = Column(Integer)
     tracking_number = Column(String(100))
 
-class Payment(Base):
+class Payments(Base):
     __tablename__ = "payments"
 
     id = Column(Integer, primary_key=True, index=True)
